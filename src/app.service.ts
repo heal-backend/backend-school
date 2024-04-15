@@ -13,4 +13,15 @@ export class AppService {
     const chatrooms = await prismaClient.chatroom.findMany();
     return chatrooms;
   }
+  
+  async createChatroom(name) {
+    const prismaClient = new PrismaService();
+
+    const chatrooms = await prismaClient.chatroom.create({
+      data: {
+        name: name
+      }
+    });
+    return chatrooms;
+  }
 }
