@@ -24,4 +24,16 @@ export class AppService {
     });
     return chatrooms;
   }
+  
+  async createMessage(chatroomId, content) {
+    const prismaClient = new PrismaService();
+
+    const chatrooms = await prismaClient.message.create({
+      data: {
+        content: content,
+        chatroomId: chatroomId
+      }
+    });
+    return chatrooms;
+  }
 }

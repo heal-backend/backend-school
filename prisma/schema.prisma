@@ -16,6 +16,9 @@ datasource db {
 model Chatroom {
   id        Int      @id @default(autoincrement())
   name      String
+
+  messages  Message[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -23,6 +26,10 @@ model Chatroom {
 model Message {
   id        Int      @id @default(autoincrement())
   content      String
+
+  chatroom  Chatroom   @relation(fields: [chatroomId], references: [id])
+  chatroomId Int
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
