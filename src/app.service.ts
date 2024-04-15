@@ -43,6 +43,10 @@ export class AppService {
     const chatrooms = await prismaClient.message.findMany({
       where: {
         chatroomId: chatroomId
+      },
+      // sort
+      orderBy: {
+        createdAt: 'desc'
       }
     });
     return chatrooms;
