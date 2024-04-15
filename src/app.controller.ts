@@ -28,4 +28,11 @@ export class AppController {
   ) {
     return this.appService.createMessage(chatroomId, content);
   }
+  
+  @Get('message')
+  async getMessage(
+    @Body() { chatroomId }
+  ) {
+    return this.appService.getMessages(chatroomId);
+  }
 }
