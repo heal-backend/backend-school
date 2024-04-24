@@ -29,13 +29,14 @@ export class AppService {
           username
         }
       })
-      
+        console.log(user)
+        console.log(user)
+        console.log(user)
       if (!user) return "non existing user";
 
       if (user.password !== password) {
         return "wrong password"
       }
-
 
       return user
   }

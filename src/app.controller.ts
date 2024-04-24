@@ -23,7 +23,7 @@ export class AppController {
       return res.status(400).json({message: "username already exists"})
     }
 
-    return result;
+    return res.status(200).json();
   }
   
   @Post('auth/signin')
@@ -35,9 +35,12 @@ export class AppController {
       return res.status(400).json({message: "input username, password necesarry"})
     }
     const result = await this.appService.signin(username, password);
-    if (result === "non existing user") res.status(400).json({message: "non existing user"})
-    if (result === "wrong password") res.status(400).json({message: "wrong password"})
-    return result;
+    if (result === "non existing user") return res.status(400).json({message: "non existing user"})
+    if (result === "wrong password") return res.status(400).json({message: "wrong password"})
+    console.log(result)
+    console.log(result)
+    console.log(result)
+    return res.status(200).json()
   }
   
   @Get('chatroom')
