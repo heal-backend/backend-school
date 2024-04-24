@@ -36,6 +36,7 @@ export class AppController {
     }
     const result = await this.appService.signin(username, password);
     if (result === "non existing user") res.status(400).json({message: "non existing user"})
+    if (result === "wrong password") res.status(400).json({message: "wrong password"})
     return result;
   }
   
