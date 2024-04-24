@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Res } from '@nestjs/common';
 import { AppService } from './app.service';
 
 @Controller()
@@ -11,23 +11,32 @@ export class AppController {
   }
 
   @Post('auth/signup')
-  signup(
-    @Body() { username, password }
+  async signup(
+    @Body() { username, password },
+    @Res() res
   ) {
     if (!username || !password) {
-      return "input username, password necesarry"
+      return res.status(400).json({message: "input username, password necesarry"})
     }
-    return this.appService.signup(username, password);
+    const result =  await this.appService.signup(username, password);
+    if (result === 'username already exists') {
+      return res.status(400).json({message: "username already exists"})
+    }
+
+    return result;
   }
   
   @Post('auth/signin')
   async signin(
-    @Body() { username, password }
+    @Body() { username, password },
+    @Res() res
   ) {
     if (!username || !password) {
-      return "input username, password necesarry"
+      return res.status(400).json({message: "input username, password necesarry"})
     }
-    return this.appService.signin(username, password);
+    const result = await this.appService.signin(username, password);
+    if (result === "non existing user") res.status(400).json({message: "non existing user"})
+    return result;
   }
   
   @Get('chatroom')
