@@ -15,12 +15,20 @@ export class AppController {
     @Body() { username, password }
   ) {
     if (!username || !password) {
-      return "username, password necesarry"
+      return "input username, password necesarry"
     }
     return this.appService.signup(username, password);
   }
-
-
+  
+  @Post('auth/signin')
+  async signin(
+    @Body() { username, password }
+  ) {
+    if (!username || !password) {
+      return "input username, password necesarry"
+    }
+    return this.appService.signin(username, password);
+  }
   
   @Get('chatroom')
   async getChatroom() {

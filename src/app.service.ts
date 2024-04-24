@@ -21,6 +21,24 @@ export class AppService {
       if (err.code == 'P2002') return 'username already exists'
     }
   }
+  
+  async signin(username, password) {
+    const prismaClient = new PrismaService();
+      const user = await prismaClient.user.findFirst({
+        where: {
+          username
+        }
+      })
+      
+      if (!user) return "non existing user";
+
+      if (user.password !== password) {
+        return "wrong password"
+      }
+
+
+      return user
+  }
 
   async getChatroom() {
     const prismaClient = new PrismaService();
