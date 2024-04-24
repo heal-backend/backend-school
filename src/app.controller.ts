@@ -9,6 +9,18 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
+
+  @Post('auth/signup')
+  signup(
+    @Body() { username, password }
+  ) {
+    if (!username || !password) {
+      return "username, password necesarry"
+    }
+    return this.appService.signup(username, password);
+  }
+
+
   
   @Get('chatroom')
   async getChatroom() {

@@ -1,10 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from './prisma/prisma.service';
+import { PrismaClient } from '@prisma/client';
 
 @Injectable()
 export class AppService {
   getHello(): string {
     return 'Hello World!';
+  }
+  
+  async signup(username, password) {
+    const prismaClient = new PrismaService();
+    try {
+      return await prismaClient.user.create({
+        data: {
+          username,
+          password
+        }
+      })
+    } catch (err) {
+      if (err.code == 'P2002') return 'username already exists'
+    }
   }
 
   async getChatroom() {
