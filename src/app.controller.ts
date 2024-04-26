@@ -72,7 +72,11 @@ export class AppController {
 
   @Post('kakaopay/payment/ready')
   async tryKakaoPaymentReady(@Body() body) {
+    try {
       const response = await axios.post('https://open-api.kakaopay.com/online/v1/payment/ready', body);
       return response;
+    } catch (err) {
+      return err;
+    }
   }
 }
