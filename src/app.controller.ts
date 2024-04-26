@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Param, Post, Res } from '@nestjs/common';
 import { AppService } from './app.service';
+import axios from 'axios';
 
 @Controller()
 export class AppController {
@@ -67,5 +68,11 @@ export class AppController {
     @Body() { chatroomId }
   ) {
     return this.appService.getMessages(chatroomId);
+  }
+
+  @Post('kakaopay/payment/ready')
+  async tryKakaoPaymentReady(@Body() body) {
+      const response = await axios.post('https://open-api.kakaopay.com/online/v1/payment/ready', body);
+      return response;
   }
 }
