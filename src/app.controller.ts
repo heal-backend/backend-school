@@ -73,8 +73,13 @@ export class AppController {
   @Post('kakaopay/payment/ready')
   async tryKakaoPaymentReady(@Body() body) {
     try {
-      const response = await axios.post('https://open-api.kakaopay.com/online/v1/payment/ready', body);
-      return response;
+      const response = await axios.post('https://open-api.kakaopay.com/online/v1/payment/ready', body, {
+        headers: {
+          Authorization: "SECRET_KEY DEV057F63A391B978F98352FAC04D7F4C488A9B1",
+          "Content-Type": "application/json"
+        }
+      });
+      return response.data;
     } catch (err) {
       return err;
     }
