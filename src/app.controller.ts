@@ -36,7 +36,7 @@ export class AppController {
       try {
         const response = await axios({
             method: 'POST',
-            url: 'https://svc.niceapi.co.kr:22001//digital/niceid/api/v1.0/common/crypto/token',
+            url: 'https://svc.niceapi.co.kr:22001/digital/niceid/oauth/oauth/token',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
                 'Authorization': `Basic ${authorization}`
