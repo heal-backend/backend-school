@@ -7,6 +7,13 @@ import {stringify} from 'qs';
 export class AppController {
   // constructor(private readonly appService: AppService) {}
 
+  @Get()
+  getHello1() {
+    console.log("hello")
+    console.log("hello")
+    console.log("hello")
+  }
+  
   @Get('nice-hello')
   getHello() {
     console.log("hello")
