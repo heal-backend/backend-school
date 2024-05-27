@@ -33,23 +33,31 @@ export class AppController {
           'grant_type': 'client_credentials'
       };
   
-      const response = await axios({
-          method: 'POST',
-          url: 'https://svc.niceapi.co.kr:22001//digital/niceid/api/v1.0/common/crypto/token',
-          headers: {
-              'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
-              'Authorization': `Basic ${authorization}`
-          },
-          data: stringify(dataBody)
-      });
+      try {
+        const response = await axios({
+            method: 'POST',
+            url: 'https://svc.niceapi.co.kr:22001//digital/niceid/api/v1.0/common/crypto/token',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
+                'Authorization': `Basic ${authorization}`
+            },
+            data: stringify(dataBody)
+        });
+        const token = response.data;
+        console.log("token")
+        console.log("token")
+        console.log(token)
+        console.log("token")
+        console.log("token")
+      } catch (e) {
+        console.log("e")
+        console.log("e")
+        console.log(e)
+        console.log("e")
+        console.log("e")
+      }
       
-      const token = response.data;
 
-      console.log("token")
-      console.log("token")
-      console.log(token)
-      console.log("token")
-      console.log("token")
   }
   
   @Post('crypted-token')
@@ -66,24 +74,33 @@ export class AppController {
       "enc_mode": 1
   };
 
-      const response = await axios({
-          method: 'POST',
-          url: 'https://svc.niceapi.co.kr:22001/digital/niceid/api/v1.0/common/crypto/token',
-          headers: {
-              'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
-              'Authorization': `Basic ${authorization}`,  
-              "CNTY_CD": "ko"
-          },
-          data: stringify(dataBody)
-      });
-      
-      const token = response.data;
+  try {
+    const response = await axios({
+        method: 'POST',
+        url: 'https://svc.niceapi.co.kr:22001/digital/niceid/api/v1.0/common/crypto/token',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
+            'Authorization': `Basic ${authorization}`,  
+            "CNTY_CD": "ko"
+        },
+        data: stringify(dataBody)
+    });
+    
+    const token = response.data;
+  
+    console.log("crypto")
+    console.log("crypto")
+    console.log(token)
+    console.log("crypto")
+    console.log("crypto")
 
-      console.log("crypto")
-      console.log("crypto")
-      console.log(token)
-      console.log("crypto")
-      console.log("crypto")
+  } catch (e) {
+    console.log("e")
+    console.log("e")
+    console.log(e)
+    console.log("e")
+    console.log("e")
+  }
   }
 
   @Post('auth/signup')
