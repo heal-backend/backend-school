@@ -34,10 +34,44 @@ export class AppController {
   
       const response = await axios({
           method: 'POST',
-          url: 'https://svc.niceapi.co.kr:22001/digital/niceid/oauth/oauth/token',
+          url: 'https://svc.niceapi.co.kr:22001//digital/niceid/api/v1.0/common/crypto/token',
           headers: {
               'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
               'Authorization': `Basic ${authorization}`
+          },
+          data: stringify(dataBody)
+      });
+      
+      const token = response.data;
+
+      console.log("token")
+      console.log("token")
+      console.log(token)
+      console.log("token")
+      console.log("token")
+  }
+  
+  @Post('crypted-token')
+  async getCryptedToken(@Body() body) {
+    const clientId = "af394038-aa0b-41bb-ad96-00669e5d9698";
+    const clientSecret = "6620c480c13db6426b09d72f5616c074";
+      const authorization = Buffer.from(clientId + ':' + clientSecret).toString('base64');
+    const accessToken = body.accessToken;
+    const productId = 2101979031;
+
+    const dataBody = {
+      'req_dtim': "20210622162600",
+      "req_no": "",
+      "enc_mode": 1
+  };
+
+      const response = await axios({
+          method: 'POST',
+          url: 'https://svc.niceapi.co.kr:22001/digital/niceid/api/v1.0/common/crypto/token',
+          headers: {
+              'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
+              'Authorization': `Basic ${authorization}`,  
+              "CNTY_CD": "ko"
           },
           data: stringify(dataBody)
       });
