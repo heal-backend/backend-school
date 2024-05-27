@@ -81,7 +81,7 @@ export class AppController {
         url: 'https://svc.niceapi.co.kr:22001/digital/niceid/api/v1.0/common/crypto/token',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
-            'Authorization': `Basic ${authorization}`,  
+            'Authorization': `Bearer ${authorization}`,  
             "CNTY_CD": "ko"
         },
         data: stringify(dataBody)
