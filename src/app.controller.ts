@@ -98,7 +98,7 @@ export class AppController {
             'Authorization': `bearer ${authorization}`,  
             "CNTY_CD": "ko",
             "client_id": clientId,
-            "productID": productId
+            "product_id": productId
         },
         data: stringify(dataBody)
     });
