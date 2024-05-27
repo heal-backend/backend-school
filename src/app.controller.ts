@@ -79,14 +79,7 @@ export class AppController {
     const now = new Date();
     const currentTimestamp = Math.floor(now.getTime()/1000);
       const authorization = Buffer.from(`${body.accessToken}:${currentTimestamp}:${clientId}`).toString('base64');
-    // const accessToken = body.accessToken;
     const productId = 2101979031;
-
-    const dataBody = {
-      'req_dtim': this.getReqDtim(now),
-      "req_no": uuidv4().substring(0, 30),
-      "enc_mode": 1
-  };
 
   try {
     const response = await axios({
@@ -98,7 +91,6 @@ export class AppController {
             "client_id": clientId,
             "productID": productId
         },
-        // data: stringify(dataBody)
         data: {
           'dataHeader': {
             "CNTY_CD": "ko",
@@ -106,7 +98,7 @@ export class AppController {
           'dataBody': {
             'req_dtim': this.getReqDtim(now),
             "req_no": uuidv4().substring(0, 30),
-            "enc_mode": 1
+            "enc_mode": "1"
           }
         }
     });
