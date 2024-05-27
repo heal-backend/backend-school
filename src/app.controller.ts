@@ -96,11 +96,20 @@ export class AppController {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
             'Authorization': `bearer ${authorization}`,  
-            "CNTY_CD": "ko",
             "client_id": clientId,
             "product_id": productId
         },
-        data: stringify(dataBody)
+        // data: stringify(dataBody)
+        data: {
+          'dataHeader': {
+            "CNTY_CD": "ko",
+          },
+          'dataBody': {
+            'req_dtim': this.getReqDtim(),
+            "req_no": uuidv4().substring(0, 30),
+            "enc_mode": 1
+          }
+        }
     });
     
     const token = response.data;
