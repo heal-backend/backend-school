@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Param, Post, Res } from '@nestjs/common';
 import { AppService } from './app.service';
 import axios from 'axios';
+import {stringify} from 'qs';
 
 @Controller()
 export class AppController {
@@ -9,6 +10,36 @@ export class AppController {
   @Get()
   getHello(): string {
     return this.appService.getHello();
+  }
+
+  @Post('nice-test')
+  async niceTest() {
+      const clientId = "af394038-aa0b-41bb-ad96-00669e5d9698";
+      const clientSecret = "6620c480c13db6426b09d72f5616c074";
+      const authorization = Buffer.from(clientId + ':' + clientSecret).toString('base64');
+  
+      const dataBody = {
+          'scope': 'default',
+          'grant_type': 'client_credentials'
+      };
+  
+      const response = await axios({
+          method: 'POST',
+          url: 'https://svc.niceapi.co.kr:22001/digital/niceid/oauth/oauth/token',
+          headers: {
+              'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
+              'Authorization': `Basic ${authorization}`
+          },
+          data: stringify(dataBody)
+      });
+      
+      const token = response.data;
+
+      console.log("token")
+      console.log("token")
+      console.log(token)
+      console.log("token")
+      console.log("token")
   }
 
   @Post('auth/signup')
@@ -84,4 +115,6 @@ export class AppController {
       return err;
     }
   }
+  
+  
 }
