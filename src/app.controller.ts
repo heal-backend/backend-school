@@ -60,8 +60,7 @@ export class AppController {
 
   }
 
-  getReqDtim() {
-    const date = new Date();
+  getReqDtim(date: Date) {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
@@ -84,7 +83,7 @@ export class AppController {
     const productId = 2101979031;
 
     const dataBody = {
-      'req_dtim': this.getReqDtim(),
+      'req_dtim': this.getReqDtim(now),
       "req_no": uuidv4().substring(0, 30),
       "enc_mode": 1
   };
@@ -105,7 +104,7 @@ export class AppController {
             "CNTY_CD": "ko",
           },
           'dataBody': {
-            'req_dtim': this.getReqDtim(),
+            'req_dtim': this.getReqDtim(now),
             "req_no": uuidv4().substring(0, 30),
             "enc_mode": 1
           }
