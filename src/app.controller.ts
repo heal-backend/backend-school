@@ -62,6 +62,7 @@ export class AppController {
   
   @Post('crypted-token')
   async getCryptedToken(@Body() body) {
+    console.log(body.accessToken)
     const clientId = "af394038-aa0b-41bb-ad96-00669e5d9698";
     const clientSecret = "6620c480c13db6426b09d72f5616c074";
     const currentTimestamp = new Date().getTime()/1000;
