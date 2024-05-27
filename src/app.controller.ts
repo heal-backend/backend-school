@@ -2,6 +2,7 @@ import { Body, Controller, Get, Param, Post, Res } from '@nestjs/common';
 // import { AppService } from './app.service';
 import axios from 'axios';
 import {stringify} from 'qs';
+import { v4 as uuidv4 } from 'uuid';
 
 @Controller()
 export class AppController {
@@ -56,12 +57,12 @@ export class AppController {
     const clientId = "af394038-aa0b-41bb-ad96-00669e5d9698";
     const clientSecret = "6620c480c13db6426b09d72f5616c074";
       const authorization = Buffer.from(clientId + ':' + clientSecret).toString('base64');
-    const accessToken = body.accessToken;
-    const productId = 2101979031;
+    // const accessToken = body.accessToken;
+    // const productId = 2101979031;
 
     const dataBody = {
       'req_dtim': "20210622162600",
-      "req_no": "",
+      "req_no": uuidv4().substring(0, 30),
       "enc_mode": 1
   };
 
@@ -78,11 +79,11 @@ export class AppController {
       
       const token = response.data;
 
-      console.log("token")
-      console.log("token")
+      console.log("crypto")
+      console.log("crypto")
       console.log(token)
-      console.log("token")
-      console.log("token")
+      console.log("crypto")
+      console.log("crypto")
   }
 
   @Post('auth/signup')
