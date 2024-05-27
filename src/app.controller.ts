@@ -81,7 +81,7 @@ export class AppController {
     const currentTimestamp = Math.floor(now.getTime()/1000);
       const authorization = Buffer.from(`${body.accessToken}:${currentTimestamp}:${clientId}`).toString('base64');
     // const accessToken = body.accessToken;
-    // const productId = 2101979031;
+    const productId = 2101979031;
 
     const dataBody = {
       'req_dtim': this.getReqDtim(),
@@ -96,7 +96,9 @@ export class AppController {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
             'Authorization': `bearer ${authorization}`,  
-            "CNTY_CD": "ko"
+            "CNTY_CD": "ko",
+            "client_id": clientId,
+            "productID": productId
         },
         data: stringify(dataBody)
     });
