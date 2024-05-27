@@ -97,7 +97,7 @@ export class AppController {
             'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
             'Authorization': `bearer ${authorization}`,  
             "client_id": clientId,
-            "product_id": productId
+            "productID": productId
         },
         // data: stringify(dataBody)
         data: {
