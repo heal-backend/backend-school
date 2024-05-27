@@ -59,19 +59,32 @@ export class AppController {
       
 
   }
+
+  getReqDtim() {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+
+    const formattedDateTime = `${year}${month}${day}${hours}${minutes}${seconds}`;
+    return formattedDateTime;
+}
   
   @Post('crypted-token')
   async getCryptedToken(@Body() body) {
     console.log(body.accessToken)
     const clientId = "af394038-aa0b-41bb-ad96-00669e5d9698";
-    const clientSecret = "6620c480c13db6426b09d72f5616c074";
-    const currentTimestamp = new Date().getTime()/1000;
+    const now = new Date();
+    const currentTimestamp = Math.floor(now.getTime()/1000);
       const authorization = Buffer.from(`${body.accessToken}:${currentTimestamp}:${clientId}`).toString('base64');
     // const accessToken = body.accessToken;
     // const productId = 2101979031;
 
     const dataBody = {
-      'req_dtim': "20210622162600",
+      'req_dtim': this.getReqDtim(),
       "req_no": uuidv4().substring(0, 30),
       "enc_mode": 1
   };
