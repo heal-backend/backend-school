@@ -7,10 +7,12 @@ import {stringify} from 'qs';
 export class AppController {
   // constructor(private readonly appService: AppService) {}
 
-  // @Get()
-  // getHello(): string {
-  //   return this.appService.getHello();
-  // }
+  @Get('nice-hello')
+  getHello() {
+    console.log("hello")
+    console.log("hello")
+    console.log("hello")
+  }
 
   @Post('nice-test')
   async niceTest() {
