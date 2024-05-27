@@ -64,7 +64,8 @@ export class AppController {
   async getCryptedToken(@Body() body) {
     const clientId = "af394038-aa0b-41bb-ad96-00669e5d9698";
     const clientSecret = "6620c480c13db6426b09d72f5616c074";
-      const authorization = Buffer.from(clientId + ':' + clientSecret).toString('base64');
+    const currentTimestamp = new Date().getTime()/1000;
+      const authorization = Buffer.from(`${body.accessToken}:${currentTimestamp}:${clientId}`).toString('base64');
     // const accessToken = body.accessToken;
     // const productId = 2101979031;
 
