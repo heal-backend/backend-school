@@ -93,7 +93,7 @@ export class AppController {
         method: 'POST',
         url: 'https://svc.niceapi.co.kr:22001/digital/niceid/api/v1.0/common/crypto/token',
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
+            'Content-Type': 'application/json',
             'Authorization': `bearer ${authorization}`,  
             "client_id": clientId,
             "productID": productId
