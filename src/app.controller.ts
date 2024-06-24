@@ -3,8 +3,8 @@ import { Body, Controller, Get, Param, Post, Query, Req, Res, Session } from '@n
 import axios from 'axios';
 import {stringify} from 'qs';
 import { v4 as uuidv4 } from 'uuid';
-import { createHash, createCipheriv, createHmac} from 'crypto';
-import { Request } from 'express';
+import { createHash, createCipheriv, createHmac, createDecipheriv} from 'crypto';
+import iconv from 'iconv-lite';
 
 @Controller()
 export class AppController {
@@ -96,9 +96,6 @@ export class AppController {
 
         const integrityValue = niceAuthHandler.hmac256(encData, hmacKey);
     
-        console.log("req.session")
-        console.log("req.session")
-        console.log(session)
        return {
           'tokenVersionId': tokenVersionId,
           'encData': encData,
@@ -111,11 +108,12 @@ export class AppController {
       }
   }
 
-  @Get('nice-return')
+  @Get('nice-callback')
   async returnCallback(
     @Query() query,
     @Body() body,
-    @Param() param
+    @Param() param,
+    @Session() session
   ) {
     console.log("query")
     console.log(query)
@@ -123,6 +121,19 @@ export class AppController {
     console.log(body)
     console.log("param")
     console.log(param)
+    try {
+      const niceAuthHandler = new NiceAuthHandler();
+      
+      // 세션에 저장된 대칭키 
+      const { key, iv } = session.nice_key;
+      const encData = query.enc_data;
+
+      const decData = niceAuthHandler.decryptData(encData, key, iv);
+      console.log(decData)
+      // res.redirect(301, 'http:locahost:3000/nice_success');
+  } catch (error) {
+      // res.status(500).json({ error: error.toString() })
+  }
   }
 
   @Post('nice-test')
@@ -283,7 +294,7 @@ class NiceAuthHandler {
   clientId: any;
   accessToken: any;
   productId: any;
-  constructor(clientId, accessToken, productId) {
+  constructor(clientId?, accessToken?, productId?) {
       this.clientId = clientId;
       this.accessToken = accessToken;
       this.productId = productId;
@@ -402,5 +413,26 @@ hmac256(data, hmacKey) {
   } catch (error) {
       throw new Error('Failed to generate HMACSHA256 encrypt');
   }
+}
+
+decryptData(data, key, iv) {
+    try {
+        if (!data || !key || !iv) {
+            throw new Error('Empty parameter');
+        }
+
+        const decipher = createDecipheriv('aes-128-cbc', Buffer.from(key), Buffer.from(iv));
+        let decrypted = decipher.update(data, 'base64', 'binary');
+        decrypted += decipher.final('binary');
+
+        // 'binary'에서 'euc-kr'로 디코딩
+        decrypted = iconv.decode(Buffer.from(decrypted, 'binary'), 'euc-kr');
+
+        const resData = JSON.parse(decrypted);
+        return resData;
+    } catch (error) {
+        console.log(error);
+        throw new Error('Failed to decrypt data');
+    }
 }
 }
