@@ -140,6 +140,8 @@ export class AppController {
   async #getAccessToken() {
     const clientId = process.env.NICE_CLIENT_ID;
     const clientSecret = process.env.NICE_CLIENT_SECRET;
+    console.log(clientId)
+    console.log(clientSecret)
     const authorization = Buffer.from(clientId + ':' + clientSecret).toString('base64');
 
     const dataBody = {
@@ -156,11 +158,11 @@ export class AppController {
         },
         data: stringify(dataBody)
     });
-    console.log(response)
 
     console.log("response.data.dataBody.access_token")
     console.log("response.data.dataBody.access_token")
     console.log(response.data.dataBody.access_token)
+    console.log(response.data)
     console.log("response.data.dataBody.access_token")
     console.log("response.data.dataBody.access_token")
 
