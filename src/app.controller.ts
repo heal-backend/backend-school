@@ -13,7 +13,8 @@ export class AppController {
   clientId = "af394038-aa0b-41bb-ad96-00669e5d9698";
   clientSecret = "6620c480c13db6426b09d72f5616c074";
 
-  tmpDatas = [];
+  key: string;
+  iv: string;
 
   @Get()
   getHello1(@Session() session) {
@@ -28,14 +29,6 @@ export class AppController {
   async getSite(
     @Session() session,
     @Query() {name}) {
-      console.log(name)
-      console.log(name)
-      console.log(name)
-      console.log(name)
-      console.log(name)
-      console.log(name)
-      console.log(name)
-      console.log(name)
     // try {
       const accessToken = await this.#getAccessToken();
       
@@ -49,9 +42,6 @@ export class AppController {
       const reqDtim = this.getReqDtim(now);
       const reqNo = uuidv4().substring(0, 30);
 
-      console.log("reqDtim")
-      console.log(reqDtim)
-      console.log(reqNo)
       try {
         const response = await axios({
             method: 'POST',
@@ -85,11 +75,8 @@ export class AppController {
 
         const { key, iv, hmacKey } = niceAuthHandler.generateSymmetricKey(reqDtim, reqNo, tokenVal);
 
-        session.nice_key = {
-          key: key,
-          iv: iv,
-        }
-        this.tmpDatas.push()
+        this.key= key;
+        this.iv= iv;
         
         const requestno = reqNo;    // 서비스 요청 고유 번호(*)   
         const returnurl = "http://13.209.188.108:4001/nice-callback";   // 인증결과를 받을 url(*)   
@@ -132,7 +119,6 @@ export class AppController {
     @Query() query,
     @Body() body,
     @Param() param,
-    @Session() session
   ) {
     console.log("query")
     console.log(query)
@@ -140,12 +126,11 @@ export class AppController {
     console.log(body)
     console.log("param")
     console.log(param)
-    const { key, iv } = session.nice_key;
     const encData = query.enc_data;
 
     try {
       // 세션에 저장된 대칭키 
-      const decData = this.decryptData(encData, key, iv);
+      const decData = this.decryptData(encData, this.key, this.iv);
       console.log("decData")
       console.log(decData)
       return decData
