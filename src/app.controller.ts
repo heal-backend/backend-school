@@ -74,7 +74,10 @@ export class AppController {
           const tokenVersionId=  response.data.dataBody.token_version_id
 
         const { key, iv, hmacKey } = niceAuthHandler.generateSymmetricKey(reqDtim, reqNo, tokenVal);
-
+        console.log("key")
+        console.log("key")
+        console.log(key)
+        console.log(iv)
         session.nice_key = {
           key: key,
           iv: iv,
