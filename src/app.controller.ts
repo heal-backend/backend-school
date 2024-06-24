@@ -13,6 +13,8 @@ export class AppController {
   clientId = "af394038-aa0b-41bb-ad96-00669e5d9698";
   clientSecret = "6620c480c13db6426b09d72f5616c074";
 
+  tmpDatas = [];
+
   @Get()
   getHello1(@Session() session) {
 
@@ -36,6 +38,10 @@ export class AppController {
 
       const reqDtim = this.getReqDtim(now);
       const reqNo = uuidv4().substring(0, 30);
+
+      console.log("reqDtim")
+      console.log(reqDtim)
+      console.log(reqNo)
       try {
         const response = await axios({
             method: 'POST',
@@ -73,6 +79,7 @@ export class AppController {
           key: key,
           iv: iv,
         }
+        this.tmpDatas.push()
         
         const requestno = reqNo;    // 서비스 요청 고유 번호(*)   
         const returnurl = "http://13.209.188.108:4001/nice-callback";   // 인증결과를 받을 url(*)   
@@ -193,56 +200,56 @@ export class AppController {
     return formattedDateTime;
 }
   
-  @Post('crypted-token')
-  async getCryptedToken(@Body() body) {
-    console.log(body.accessToken)
-    const clientId = "af394038-aa0b-41bb-ad96-00669e5d9698";
-    const now = new Date();
-    const currentTimestamp = Math.floor(now.getTime()/1000);
-    console.log(`${body.accessToken}:${currentTimestamp}:${clientId}`)
-    console.log(`${body.accessToken}:${currentTimestamp}:${clientId}`)
-    console.log(`${body.accessToken}:${currentTimestamp}:${clientId}`)
-      const authorization = Buffer.from(`${body.accessToken}:${currentTimestamp}:${clientId}`).toString('base64');
-    const productId = 2101979031;
+  // @Post('crypted-token')
+  // async getCryptedToken(@Body() body) {
+  //   console.log(body.accessToken)
+  //   const clientId = "af394038-aa0b-41bb-ad96-00669e5d9698";
+  //   const now = new Date();
+  //   const currentTimestamp = Math.floor(now.getTime()/1000);
+  //   console.log(`${body.accessToken}:${currentTimestamp}:${clientId}`)
+  //   console.log(`${body.accessToken}:${currentTimestamp}:${clientId}`)
+  //   console.log(`${body.accessToken}:${currentTimestamp}:${clientId}`)
+  //     const authorization = Buffer.from(`${body.accessToken}:${currentTimestamp}:${clientId}`).toString('base64');
+  //   const productId = 2101979031;
 
-  try {
-    const response = await axios({
-        method: 'POST',
-        url: 'https://svc.niceapi.co.kr:22001/digital/niceid/api/v1.0/common/crypto/token',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `bearer ${authorization}`,  
-            "client_id": clientId,
-            "productID": productId
-        },
-        data: {
-          'dataHeader': {
-            "CNTY_CD": "ko",
-          },
-          'dataBody': {
-            'req_dtim': this.getReqDtim(now),
-            "req_no": uuidv4().substring(0, 30),
-            "enc_mode": "1"
-          }
-        }
-    });
+  //   try {
+  //   const response = await axios({
+  //       method: 'POST',
+  //       url: 'https://svc.niceapi.co.kr:22001/digital/niceid/api/v1.0/common/crypto/token',
+  //       headers: {
+  //           'Content-Type': 'application/json',
+  //           'Authorization': `bearer ${authorization}`,  
+  //           "client_id": clientId,
+  //           "productID": productId
+  //       },
+  //       data: {
+  //         'dataHeader': {
+  //           "CNTY_CD": "ko",
+  //         },
+  //         'dataBody': {
+  //           'req_dtim': this.getReqDtim(now),
+  //           "req_no": uuidv4().substring(0, 30),
+  //           "enc_mode": "1"
+  //         }
+  //       }
+  //   });
     
-    const token = response.data;
+  //   const token = response.data;
   
-    console.log("crypto")
-    console.log("crypto")
-    console.log(token)
-    console.log("crypto")
-    console.log("crypto")
+  //   console.log("crypto")
+  //   console.log("crypto")
+  //   console.log(token)
+  //   console.log("crypto")
+  //   console.log("crypto")
 
-  } catch (e) {
-    console.log("e")
-    console.log("e")
-    console.log(e)
-    console.log("e")
-    console.log("e")
-  }
-  }
+  // } catch (e) {
+  //   console.log("e")
+  //   console.log("e")
+  //   console.log(e)
+  //   console.log("e")
+  //   console.log("e")
+  // }
+  // }
 
   @Post('auth/signup')
   async signup(
@@ -292,7 +299,6 @@ export class AppController {
   };
  
   decryptData(data, key, iv) {
-
     try {
         if (!data || !key || !iv) {
             throw new Error('Empty parameter');
