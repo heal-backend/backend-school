@@ -117,6 +117,9 @@ export class AppController {
     const clientId = "af394038-aa0b-41bb-ad96-00669e5d9698";
     const now = new Date();
     const currentTimestamp = Math.floor(now.getTime()/1000);
+    console.log(`${body.accessToken}:${currentTimestamp}:${clientId}`)
+    console.log(`${body.accessToken}:${currentTimestamp}:${clientId}`)
+    console.log(`${body.accessToken}:${currentTimestamp}:${clientId}`)
       const authorization = Buffer.from(`${body.accessToken}:${currentTimestamp}:${clientId}`).toString('base64');
     const productId = 2101979031;
 
