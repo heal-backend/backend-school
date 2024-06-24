@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Param, Post, Res } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, Res } from '@nestjs/common';
 // import { AppService } from './app.service';
 import axios from 'axios';
 import {stringify} from 'qs';
 import { v4 as uuidv4 } from 'uuid';
+import { createHash, createCipheriv, createHmac} from 'crypto';
 
 @Controller()
 export class AppController {
@@ -27,14 +28,18 @@ export class AppController {
       const currentTimestamp = Math.floor(now.getTime()/1000);
       const authorization = Buffer.from(`${accessToken}:${currentTimestamp}:${this.clientId}`).toString('base64');
       const productId = 2101979031;
+      
+      const niceAuthHandler = new NiceAuthHandler(this.clientId, accessToken, productId);
 
+      const reqDtim = this.getReqDtim(now);
+      const reqNo = uuidv4().substring(0, 30);
       try {
         const response = await axios({
             method: 'POST',
             url: 'https://svc.niceapi.co.kr:22001/digital/niceid/api/v1.0/common/crypto/token',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `bearer ${authorization}`,  
+                'Authorization': `bearer ${authorization}`,
                 "client_id": this.clientId,
                 "productID": productId
             },
@@ -43,8 +48,8 @@ export class AppController {
                 "CNTY_CD": "ko",
               },
               'dataBody': {
-                'req_dtim': this.getReqDtim(now),
-                "req_no": uuidv4().substring(0, 30),
+                'req_dtim': reqDtim,
+                "req_no": reqNo,
                 "enc_mode": "1"
               }
             }
@@ -54,17 +59,61 @@ export class AppController {
       
         console.log("token")
         console.log(token)
-        return {
-          'siteCode': response.data.dataBody.site_code,
-          'tokenVal': response.data.dataBody.token_val,
-          'tokenVersionId': response.data.dataBody.token_version_id
-      }
+        
+          const siteCode= response.data.dataBody.site_code;
+          const tokenVal= response.data.dataBody.token_val;
+          const tokenVersionId=  response.data.dataBody.token_version_id
+
+        const { key, iv, hmacKey } = niceAuthHandler.generateSymmetricKey(reqDtim, reqNo, tokenVal);
+        
+        const requestno = reqNo;    // 서비스 요청 고유 번호(*)   
+        const returnurl = "http://13.209.188.108:4001/nice-return";   // 인증결과를 받을 url(*)   
+        const sitecode = siteCode;  // 암호화토큰요청 API 응답 site_code(*)    
+        const authtype = '';    // 인증수단 고정(M:휴대폰인증,C:카드본인확인인증,X:인증서인증,U:공동인증서인증,F:금융인증서인증,S:PASS인증서인증)
+        const mobileco = '';    // 이통사 우선 선택 
+        const bussinessno = ''; // 사업자번호(법인인증인증에 한함)
+        const methodtype = 'get';   // 결과 url 전달 시 http method 타입
+        const popupyn = 'Y';    // 
+        const receivedata = ''; // 인증 후 전달받을 데이터 세팅 
+
+        const reqData = ({
+            'requestno': requestno,
+            'returnurl': returnurl,
+            'sitecode': sitecode,
+            'authtype': authtype,
+            'methodtype': methodtype,
+            'popupyn': popupyn,
+            'receivedata': receivedata
+        });
+        
+        const encData = niceAuthHandler.encryptData(reqData, key, iv);
+
+        const integrityValue = niceAuthHandler.hmac256(encData, hmacKey);
     
+       return {
+          'tokenVersionId': tokenVersionId,
+          'encData': encData,
+          'integrityValue': integrityValue
+      }
       } catch (e) {
         console.log("e")
         console.log(e)
         console.log("e")
       }
+  }
+
+  @Get('nice-return')
+  async returnCallback(
+    @Query() query,
+    @Body() body,
+    @Param() param
+  ) {
+    console.log("query")
+    console.log(query)
+    console.log("body")
+    console.log(body)
+    console.log("param")
+    console.log(param)
   }
 
   @Post('nice-test')
@@ -286,5 +335,63 @@ class NiceAuthHandler {
       } catch (error) {
           throw new Error('Failed to get encryption token');
       }
+      
   }
+
+
+generateSymmetricKey(reqDtim, reqNo, tokenVal) {
+  try {
+      if (!reqDtim || !reqNo || !tokenVal) {
+          throw new Error('Empty parameter');
+      }
+
+      const value = reqDtim.trim() + reqNo.trim() + tokenVal.trim();
+
+      // SHA256 암호화 후 Base64 encoding
+      const hash = createHash('sha256').update(value).digest('base64');
+
+      return {
+          'key': hash.slice(0, 16),	// 앞에서부터 16byte
+          'iv': hash.slice(-16),	// 뒤에서부터 16byte
+          'hmacKey': hash.slice(0, 32) // 앞에서부터 32byte
+      }
+  } catch (error) {
+      throw new Error('Failed to generate symmetric key');
+  }
+}
+
+encryptData(data, key, iv) {
+  try {
+      if (!data || !key || !iv) {
+          throw new Error('Empty parameter');
+      }
+
+      const strData = JSON.stringify(data).trim();
+
+      // AES128/CBC/PKCS7 암호화         
+      const cipher = createCipheriv('aes-128-cbc', Buffer.from(key), Buffer.from(iv));
+      let encrypted = cipher.update(strData, 'utf-8', 'base64');
+      encrypted += cipher.final('base64');
+
+      return encrypted;
+  } catch (error) {
+      throw new Error('Failed to encrypt data');
+  }
+}
+hmac256(data, hmacKey) {
+  try {
+      if (!data || !hmacKey) {
+          throw new Error('Empty parameter');
+      }
+
+      const hmac = createHmac('sha256', Buffer.from(hmacKey));
+      hmac.update(Buffer.from(data));
+
+      const integrityValue = hmac.digest().toString('base64');
+
+      return integrityValue;
+  } catch (error) {
+      throw new Error('Failed to generate HMACSHA256 encrypt');
+  }
+}
 }
