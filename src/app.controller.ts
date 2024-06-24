@@ -22,6 +22,37 @@ export class AppController {
   async getSite() {
     // try {
       const accessToken = await this.#getAccessToken();
+      const now = new Date();
+      const currentTimestamp = now.getTime()/1000;
+      const authorization = Buffer.from(`${accessToken}:${currentTimestamp}:${this.clientId}`).toString('base64');
+      const productId = 2101979031;
+
+      try {
+        const response = await axios({
+            method: 'POST',
+            url: 'https://svc.niceapi.co.kr:22001/digital/niceid/api/v1.0/common/crypto/token',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `bearer ${authorization}`,  
+                "client_id": this.clientId,
+                "productID": productId
+            },
+            data: {
+              'dataHeader': {
+                "CNTY_CD": "ko",
+              },
+              'dataBody': {
+                'req_dtim': this.getReqDtim(now),
+                "req_no": uuidv4().substring(0, 30),
+                "enc_mode": "1"
+              }
+            }
+        });
+
+        // 암호화 토큰
+        const token = response.data;
+        console.log(token)
+      } catch(e) {}
   }
 
   @Post('nice-test')
