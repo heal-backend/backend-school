@@ -130,6 +130,9 @@ export class AppController {
       const { key, iv } = session.nice_key;
       const encData = query.enc_data;
 
+      console.log("key")
+      console.log(key)
+      console.log(iv)
       const decData = niceAuthHandler.decryptData(encData, key, iv);
       console.log("decData")
       console.log(decData)
