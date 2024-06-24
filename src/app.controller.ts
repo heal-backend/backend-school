@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Query, Req, Res, Session } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Query, Req, Res, Session } from '@nestjs/common';
 // import { AppService } from './app.service';
 import axios from 'axios';
 import {stringify} from 'qs';
@@ -87,6 +87,7 @@ export class AppController {
         const methodtype = 'get';   // 결과 url 전달 시 http method 타입
         const popupyn = 'Y';    // 
         const receivedata = ''; // 인증 후 전달받을 데이터 세팅 
+        const mobileno = 'Y';
 
         const reqData = ({
             'requestno': requestno,
@@ -95,7 +96,8 @@ export class AppController {
             'authtype': authtype,
             'methodtype': methodtype,
             'popupyn': popupyn,
-            'receivedata': receivedata
+            'receivedata': receivedata,
+            'mobileno': mobileno
         });
         
         const encData = niceAuthHandler.encryptData(reqData, key, iv);
@@ -115,6 +117,7 @@ export class AppController {
   }
 
   @Get('nice-callback')
+  @HttpCode(HttpStatus.OK)
   async returnCallback(
     @Query() query,
     @Body() body,
@@ -133,7 +136,7 @@ export class AppController {
       const decData = this.decryptData(encData, this.key, this.iv);
       console.log("decData")
       console.log(decData)
-      return decData
+      return "success"
       // res.redirect(301, 'http:locahost:3000/nice_success');
   } catch (error) {
     console.log(error)
