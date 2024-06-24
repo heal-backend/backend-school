@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Query, Res } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, Req, Res } from '@nestjs/common';
 // import { AppService } from './app.service';
 import axios from 'axios';
 import {stringify} from 'qs';
@@ -20,7 +20,7 @@ export class AppController {
   }
 
   @Get('auth/nice')
-  async getSite() {
+  async getSite(@Req() req) {
     // try {
       const accessToken = await this.#getAccessToken();
       
@@ -65,6 +65,11 @@ export class AppController {
           const tokenVersionId=  response.data.dataBody.token_version_id
 
         const { key, iv, hmacKey } = niceAuthHandler.generateSymmetricKey(reqDtim, reqNo, tokenVal);
+
+        req.session.nice_key = {
+          key: key,
+          iv: iv,
+        }
         
         const requestno = reqNo;    // 서비스 요청 고유 번호(*)   
         const returnurl = "http://13.209.188.108:4001/nice-return";   // 인증결과를 받을 url(*)   
@@ -90,6 +95,9 @@ export class AppController {
 
         const integrityValue = niceAuthHandler.hmac256(encData, hmacKey);
     
+        console.log("req.session")
+        console.log("req.session")
+        console.log(req.session)
        return {
           'tokenVersionId': tokenVersionId,
           'encData': encData,
