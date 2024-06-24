@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Query, Req, Res } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, Req, Res, Session } from '@nestjs/common';
 // import { AppService } from './app.service';
 import axios from 'axios';
 import {stringify} from 'qs';
@@ -21,7 +21,7 @@ export class AppController {
   }
 
   @Get('auth/nice')
-  async getSite(@Req() req) {
+  async getSite(@Session() session) {
     // try {
       const accessToken = await this.#getAccessToken();
       
@@ -67,7 +67,7 @@ export class AppController {
 
         const { key, iv, hmacKey } = niceAuthHandler.generateSymmetricKey(reqDtim, reqNo, tokenVal);
 
-        req.session.nice_key = {
+        session.nice_key = {
           key: key,
           iv: iv,
         }
@@ -98,7 +98,7 @@ export class AppController {
     
         console.log("req.session")
         console.log("req.session")
-        console.log(req.session)
+        console.log(session)
        return {
           'tokenVersionId': tokenVersionId,
           'encData': encData,
