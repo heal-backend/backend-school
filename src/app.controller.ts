@@ -53,11 +53,22 @@ export class AppController {
               }
             }
         });
-
-        // 암호화 토큰
+        
         const token = response.data;
+      
+        console.log("crypto")
+        console.log("crypto")
         console.log(token)
-      } catch(e) {}
+        console.log("crypto")
+        console.log("crypto")
+    
+      } catch (e) {
+        console.log("e")
+        console.log("e")
+        console.log(e)
+        console.log("e")
+        console.log("e")
+      }
   }
 
   @Post('nice-test')
