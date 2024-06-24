@@ -17,72 +17,72 @@ export class AppController {
 
   @Get('auth/nice')
   async getSite() {
-    try {
+    // try {
       const accessToken = await this.#getAccessToken();
-      console.log("accessToken")
-      console.log("accessToken")
-      console.log(accessToken)
-      console.log("accessToken")
-      console.log("accessToken")
-      const clientId = process.env.NICE_CLIENT_ID;
-      const productId = process.env.NICE_PRODUCT_ID;
+    //   console.log("accessToken")
+    //   console.log("accessToken")
+    //   console.log(accessToken)
+    //   console.log("accessToken")
+    //   console.log("accessToken")
+    //   const clientId = process.env.NICE_CLIENT_ID;
+    //   const productId = process.env.NICE_PRODUCT_ID;
 
-      const niceAuthHandler = new NiceAuthHandler(clientId, accessToken, productId);
+    //   const niceAuthHandler = new NiceAuthHandler(clientId, accessToken, productId);
 
-      // 1. 암호화 토큰 요청       
-      const nowDate = new Date();
-      // 요청일시(YYYYMMDDHH24MISS)
-      const reqDtim = niceAuthHandler.formatDate(nowDate);
-      // 요청시간(초) 
-      const currentTimestamp = Math.floor(nowDate.getTime() / 1000);
-      // 요청고유번호(30자리)
-      const reqNo = uuidv4().substring(0, 30);
+    //   // 1. 암호화 토큰 요청       
+    //   const nowDate = new Date();
+    //   // 요청일시(YYYYMMDDHH24MISS)
+    //   const reqDtim = niceAuthHandler.formatDate(nowDate);
+    //   // 요청시간(초) 
+    //   const currentTimestamp = Math.floor(nowDate.getTime() / 1000);
+    //   // 요청고유번호(30자리)
+    //   const reqNo = uuidv4().substring(0, 30);
      
-      const { siteCode, tokenVal, tokenVersionId } = await niceAuthHandler.getEncryptionToken(reqDtim, currentTimestamp, reqNo);
+    //   const { siteCode, tokenVal, tokenVersionId } = await niceAuthHandler.getEncryptionToken(reqDtim, currentTimestamp, reqNo);
 
-    } catch (error) {
-        // res.status(500).json({ error: error.toString() })
-    }
+    // } catch (error) {
+    //     // res.status(500).json({ error: error.toString() })
+    // }
   }
 
-  @Post('nice-test')
-  async niceTest() {
-      const clientId = "af394038-aa0b-41bb-ad96-00669e5d9698";
-      const clientSecret = "6620c480c13db6426b09d72f5616c074";
-      const authorization = Buffer.from(clientId + ':' + clientSecret).toString('base64');
+  // @Post('nice-test')
+  // async niceTest() {
+  //     const clientId = "af394038-aa0b-41bb-ad96-00669e5d9698";
+  //     const clientSecret = "6620c480c13db6426b09d72f5616c074";
+  //     const authorization = Buffer.from(clientId + ':' + clientSecret).toString('base64');
   
-      const dataBody = {
-          'scope': 'default',
-          'grant_type': 'client_credentials'
-      };
+  //     const dataBody = {
+  //         'scope': 'default',
+  //         'grant_type': 'client_credentials'
+  //     };
   
-      try {
-        const response = await axios({
-            method: 'POST',
-            url: 'https://svc.niceapi.co.kr:22001/digital/niceid/oauth/oauth/token',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
-                'Authorization': `Basic ${authorization}`
-            },
-            data: stringify(dataBody)
-        });
-        // const token = response.data;
-        const token = response.data.dataBody.access_token;
-        console.log("token")
-        console.log("token")
-        console.log(token)
-        console.log("token")
-        console.log("token")
-      } catch (e) {
-        console.log("e")
-        console.log("e")
-        console.log(e)
-        console.log("e")
-        console.log("e")
-      }
+  //     try {
+  //       const response = await axios({
+  //           method: 'POST',
+  //           url: 'https://svc.niceapi.co.kr:22001/digital/niceid/oauth/oauth/token',
+  //           headers: {
+  //               'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
+  //               'Authorization': `Basic ${authorization}`
+  //           },
+  //           data: stringify(dataBody)
+  //       });
+  //       // const token = response.data;
+  //       const token = response.data.dataBody.access_token;
+  //       console.log("token")
+  //       console.log("token")
+  //       console.log(token)
+  //       console.log("token")
+  //       console.log("token")
+  //     } catch (e) {
+  //       console.log("e")
+  //       console.log("e")
+  //       console.log(e)
+  //       console.log("e")
+  //       console.log("e")
+  //     }
       
 
-  }
+  // }
 
   getReqDtim(date: Date) {
     const year = date.getFullYear();
@@ -181,6 +181,13 @@ export class AppController {
         data: stringify(dataBody)
     });
     console.log(response)
+
+    console.log("response.data.dataBody.access_token")
+    console.log("response.data.dataBody.access_token")
+    console.log(response.data.dataBody.access_token)
+    console.log("response.data.dataBody.access_token")
+    console.log("response.data.dataBody.access_token")
+
     const token = response.data.dataBody.access_token;
     return token
   };
