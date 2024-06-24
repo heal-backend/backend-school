@@ -1,7 +1,6 @@
 import { Body, Controller, Get, Param, Post, Res } from '@nestjs/common';
 // import { AppService } from './app.service';
 import axios from 'axios';
-import qs from 'qs';
 import {stringify} from 'qs';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -14,6 +13,36 @@ export class AppController {
     console.log("hello")
     console.log("hello")
     console.log("hello")
+  }
+
+  @Get('auth/nice')
+  async getSite() {
+    try {
+      const accessToken = await this.#getAccessToken();
+      console.log("accessToken")
+      console.log("accessToken")
+      console.log(accessToken)
+      console.log("accessToken")
+      console.log("accessToken")
+      const clientId = process.env.NICE_CLIENT_ID;
+      const productId = process.env.NICE_PRODUCT_ID;
+
+      const niceAuthHandler = new NiceAuthHandler(clientId, accessToken, productId);
+
+      // 1. 암호화 토큰 요청       
+      const nowDate = new Date();
+      // 요청일시(YYYYMMDDHH24MISS)
+      const reqDtim = niceAuthHandler.formatDate(nowDate);
+      // 요청시간(초) 
+      const currentTimestamp = Math.floor(nowDate.getTime() / 1000);
+      // 요청고유번호(30자리)
+      const reqNo = uuidv4().substring(0, 30);
+     
+      const { siteCode, tokenVal, tokenVersionId } = await niceAuthHandler.getEncryptionToken(reqDtim, currentTimestamp, reqNo);
+
+    } catch (error) {
+        // res.status(500).json({ error: error.toString() })
+    }
   }
 
   @Post('nice-test')
@@ -114,36 +143,6 @@ export class AppController {
     console.log("e")
   }
   }
-  
-  @Get('auth/nice')
-  async getSite() {
-    try {
-      const accessToken = this.#getAccessToken();
-      console.log("accessToken")
-      console.log("accessToken")
-      console.log(accessToken)
-      console.log("accessToken")
-      console.log("accessToken")
-      const clientId = process.env.NICE_CLIENT_ID;
-      const productId = process.env.NICE_PRODUCT_ID;
-
-      const niceAuthHandler = new NiceAuthHandler(clientId, accessToken, productId);
-
-      // 1. 암호화 토큰 요청       
-      const nowDate = new Date();
-      // 요청일시(YYYYMMDDHH24MISS)
-      const reqDtim = niceAuthHandler.formatDate(nowDate);
-      // 요청시간(초) 
-      const currentTimestamp = Math.floor(nowDate.getTime() / 1000);
-      // 요청고유번호(30자리)
-      const reqNo = uuidv4().substring(0, 30);
-     
-      const { siteCode, tokenVal, tokenVersionId } = await niceAuthHandler.getEncryptionToken(reqDtim, currentTimestamp, reqNo);
-
-    } catch (error) {
-        // res.status(500).json({ error: error.toString() })
-    }
-  }
 
   @Post('auth/signup')
   async signup(
@@ -179,10 +178,11 @@ export class AppController {
             'Content-Type': 'application/x-www-form-urlencoded',
             'Authorization': `Basic ${authorization}`
         },
-        data: qs.stringify(dataBody)
+        data: stringify(dataBody)
     });
-    
+    console.log(response)
     const token = response.data.dataBody.access_token;
+    return token
   };
   
 }
