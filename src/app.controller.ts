@@ -22,8 +22,13 @@ export class AppController {
   async getSite() {
     // try {
       const accessToken = await this.#getAccessToken();
+      console.log("accessToken")
+      console.log(accessToken)
       const now = new Date();
       const currentTimestamp = now.getTime()/1000;
+      console.log(`${accessToken}:${currentTimestamp}:${this.clientId}`)
+      console.log(`${accessToken}:${currentTimestamp}:${this.clientId}`)
+      console.log(`${accessToken}:${currentTimestamp}:${this.clientId}`)
       const authorization = Buffer.from(`${accessToken}:${currentTimestamp}:${this.clientId}`).toString('base64');
       const productId = 2101979031;
 
