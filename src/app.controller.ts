@@ -25,7 +25,17 @@ export class AppController {
   }
 
   @Get('auth/nice')
-  async getSite(@Session() session) {
+  async getSite(
+    @Session() session,
+    @Query() {name}) {
+      console.log(name)
+      console.log(name)
+      console.log(name)
+      console.log(name)
+      console.log(name)
+      console.log(name)
+      console.log(name)
+      console.log(name)
     // try {
       const accessToken = await this.#getAccessToken();
       
