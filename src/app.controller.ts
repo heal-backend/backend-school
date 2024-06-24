@@ -22,10 +22,11 @@ export class AppController {
   async getSite() {
     // try {
       const accessToken = await this.#getAccessToken();
+      
       console.log("accessToken")
       console.log(accessToken)
       const now = new Date();
-      const currentTimestamp = now.getTime()/1000;
+      const currentTimestamp = Math.floor(now.getTime()/1000);
       console.log(`${accessToken}:${currentTimestamp}:${this.clientId}`)
       console.log(`${accessToken}:${currentTimestamp}:${this.clientId}`)
       console.log(`${accessToken}:${currentTimestamp}:${this.clientId}`)
