@@ -4,7 +4,7 @@ import axios from 'axios';
 import {stringify} from 'qs';
 import { v4 as uuidv4 } from 'uuid';
 import { createHash, createCipheriv, createHmac, createDecipheriv} from 'crypto';
-import iconv from 'iconv-lite';
+import { decode} from 'iconv-lite';
 
 @Controller()
 export class AppController {
@@ -301,7 +301,7 @@ export class AppController {
         decrypted += decipher.final('binary');
 
         // 'binary'에서 'euc-kr'로 디코딩
-        decrypted = iconv.decode(Buffer.from(decrypted, 'binary'), 'euc-kr');
+        decrypted = decode(Buffer.from(decrypted, 'binary'), 'euc-kr');
 
         const resData = JSON.parse(decrypted);
         return resData;
