@@ -23,13 +23,8 @@ export class AppController {
     // try {
       const accessToken = await this.#getAccessToken();
       
-      console.log("accessToken")
-      console.log(accessToken)
       const now = new Date();
       const currentTimestamp = Math.floor(now.getTime()/1000);
-      console.log(`${accessToken}:${currentTimestamp}:${this.clientId}`)
-      console.log(`${accessToken}:${currentTimestamp}:${this.clientId}`)
-      console.log(`${accessToken}:${currentTimestamp}:${this.clientId}`)
       const authorization = Buffer.from(`${accessToken}:${currentTimestamp}:${this.clientId}`).toString('base64');
       const productId = 2101979031;
 
@@ -57,17 +52,17 @@ export class AppController {
         
         const token = response.data;
       
-        console.log("crypto")
-        console.log("crypto")
+        console.log("token")
         console.log(token)
-        console.log("crypto")
-        console.log("crypto")
+        return {
+          'siteCode': response.data.dataBody.site_code,
+          'tokenVal': response.data.dataBody.token_val,
+          'tokenVersionId': response.data.dataBody.token_version_id
+      }
     
       } catch (e) {
         console.log("e")
-        console.log("e")
         console.log(e)
-        console.log("e")
         console.log("e")
       }
   }
