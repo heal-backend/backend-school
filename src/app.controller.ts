@@ -124,8 +124,6 @@ export class AppController {
     console.log("param")
     console.log(param)
     try {
-      const niceAuthHandler = new NiceAuthHandler();
-      
       // 세션에 저장된 대칭키 
       const { key, iv } = session.nice_key;
       const encData = query.enc_data;
@@ -133,7 +131,7 @@ export class AppController {
       console.log("key")
       console.log(key)
       console.log(iv)
-      const decData = niceAuthHandler.decryptData(encData, key, iv);
+      const decData = this.decryptData(encData, key, iv);
       console.log("decData")
       console.log(decData)
       return decData
@@ -291,7 +289,27 @@ export class AppController {
     const token = response.data.dataBody.access_token;
     return token
   };
-  
+ 
+  decryptData(data, key, iv) {
+    try {
+        if (!data || !key || !iv) {
+            throw new Error('Empty parameter');
+        }
+
+        const decipher = createDecipheriv('aes-128-cbc', Buffer.from(key), Buffer.from(iv));
+        let decrypted = decipher.update(data, 'base64', 'binary');
+        decrypted += decipher.final('binary');
+
+        // 'binary'에서 'euc-kr'로 디코딩
+        decrypted = iconv.decode(Buffer.from(decrypted, 'binary'), 'euc-kr');
+
+        const resData = JSON.parse(decrypted);
+        return resData;
+    } catch (error) {
+        console.log(error);
+        throw new Error('Failed to decrypt data');
+    }
+}
 }
 
 
@@ -420,26 +438,5 @@ hmac256(data, hmacKey) {
   } catch (error) {
       throw new Error('Failed to generate HMACSHA256 encrypt');
   }
-}
-
-decryptData(data, key, iv) {
-    try {
-        if (!data || !key || !iv) {
-            throw new Error('Empty parameter');
-        }
-
-        const decipher = createDecipheriv('aes-128-cbc', Buffer.from(key), Buffer.from(iv));
-        let decrypted = decipher.update(data, 'base64', 'binary');
-        decrypted += decipher.final('binary');
-
-        // 'binary'에서 'euc-kr'로 디코딩
-        decrypted = iconv.decode(Buffer.from(decrypted, 'binary'), 'euc-kr');
-
-        const resData = JSON.parse(decrypted);
-        return resData;
-    } catch (error) {
-        console.log(error);
-        throw new Error('Failed to decrypt data');
-    }
 }
 }
