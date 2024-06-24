@@ -86,7 +86,7 @@ export class AppController {
         const bussinessno = ''; // 사업자번호(법인인증인증에 한함)
         const methodtype = 'get';   // 결과 url 전달 시 http method 타입
         const popupyn = 'Y';    // 
-        const receivedata = 'xxxxdddeee'; // 인증 후 전달받을 데이터 세팅 
+        const receivedata = 'mobileno'; // 인증 후 전달받을 데이터 세팅 
         const mobileno = 'Y';
 
         const reqData = ({
