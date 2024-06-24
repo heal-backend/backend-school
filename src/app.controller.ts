@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Param, Post, Res } from '@nestjs/common';
 // import { AppService } from './app.service';
 import axios from 'axios';
+import qs from 'qs';
 import {stringify} from 'qs';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -10,13 +11,6 @@ export class AppController {
 
   @Get()
   getHello1() {
-    console.log("hello")
-    console.log("hello")
-    console.log("hello")
-  }
-  
-  @Get('nice-hello')
-  getHello() {
     console.log("hello")
     console.log("hello")
     console.log("hello")
@@ -43,7 +37,8 @@ export class AppController {
             },
             data: stringify(dataBody)
         });
-        const token = response.data;
+        // const token = response.data;
+        const token = response.data.dataBody.access_token;
         console.log("token")
         console.log("token")
         console.log(token)
@@ -119,6 +114,36 @@ export class AppController {
     console.log("e")
   }
   }
+  
+  @Get('auth/nice')
+  async getSite() {
+    try {
+      const accessToken = this.#getAccessToken();
+      console.log("accessToken")
+      console.log("accessToken")
+      console.log(accessToken)
+      console.log("accessToken")
+      console.log("accessToken")
+      const clientId = process.env.NICE_CLIENT_ID;
+      const productId = process.env.NICE_PRODUCT_ID;
+
+      const niceAuthHandler = new NiceAuthHandler(clientId, accessToken, productId);
+
+      // 1. 암호화 토큰 요청       
+      const nowDate = new Date();
+      // 요청일시(YYYYMMDDHH24MISS)
+      const reqDtim = niceAuthHandler.formatDate(nowDate);
+      // 요청시간(초) 
+      const currentTimestamp = Math.floor(nowDate.getTime() / 1000);
+      // 요청고유번호(30자리)
+      const reqNo = uuidv4().substring(0, 30);
+     
+      const { siteCode, tokenVal, tokenVersionId } = await niceAuthHandler.getEncryptionToken(reqDtim, currentTimestamp, reqNo);
+
+    } catch (error) {
+        // res.status(500).json({ error: error.toString() })
+    }
+  }
 
   @Post('auth/signup')
   async signup(
@@ -135,64 +160,100 @@ export class AppController {
 
     return res.status(200).json();
   }
-  
-  // @Post('auth/signin')
-  // async signin(
-  //   @Body() { username, password },
-  //   @Res() res
-  // ) {
-  //   if (!username || !password) {
-  //     return res.status(400).json({message: "input username, password necesarry"})
-  //   }
-  //   const result = await this.appService.signin(username, password);
-  //   if (result === "non existing user") return res.status(400).json({message: "non existing user"})
-  //   if (result === "wrong password") return res.status(400).json({message: "wrong password"})
-  //   console.log(result)
-  //   console.log(result)
-  //   console.log(result)
-  //   return res.status(200).json()
-  // }
-  
-  // @Get('chatroom')
-  // async getChatroom() {
-  //   return this.appService.getChatroom();
-  // }
-  
-  // @Post('chatroom')
-  // async createChatroom(
-  //   @Body() { name }
-  // ) {
-  //   return this.appService.createChatroom(name);
-  // }
-  
-  // @Post('message')
-  // async createMessage(
-  //   @Body() { chatroomId, content }
-  // ) {
-  //   return this.appService.createMessage(chatroomId, content);
-  // }
-  
-  // @Get('message')
-  // async getMessage(
-  //   @Body() { chatroomId }
-  // ) {
-  //   return this.appService.getMessages(chatroomId);
-  // }
+    
 
-  // @Post('kakaopay/payment/ready')
-  // async tryKakaoPaymentReady(@Body() body) {
-  //   try {
-  //     const response = await axios.post('https://open-api.kakaopay.com/online/v1/payment/ready', body, {
-  //       headers: {
-  //         Authorization: "SECRET_KEY DEV057F63A391B978F98352FAC04D7F4C488A9B1",
-  //         "Content-Type": "application/json"
-  //       }
-  //     });
-  //     return response.data;
-  //   } catch (err) {
-  //     return err;
-  //   }
-  // }
+  async #getAccessToken() {
+    const clientId = process.env.NICE_CLIENT_ID;
+    const clientSecret = process.env.NICE_CLIENT_SECRET;
+    const authorization = Buffer.from(clientId + ':' + clientSecret).toString('base64');
+
+    const dataBody = {
+        'scope': 'default',
+        'grant_type': 'client_credentials'
+    };
+
+    const response = await axios({
+        method: 'POST',
+        url: 'https://svc.niceapi.co.kr:22001/digital/niceid/oauth/oauth/token',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `Basic ${authorization}`
+        },
+        data: qs.stringify(dataBody)
+    });
+    
+    const token = response.data.dataBody.access_token;
+  };
   
-  
+}
+
+
+
+
+class NiceAuthHandler {
+  clientId: any;
+  accessToken: any;
+  productId: any;
+  constructor(clientId, accessToken, productId) {
+      this.clientId = clientId;
+      this.accessToken = accessToken;
+      this.productId = productId;
+  }
+
+  // 날짜 데이터 형변환(YYYYMMDDHH24MISS)
+  formatDate(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const hours = String(date.getHours()).padStart(2, '0');
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      const seconds = String(date.getSeconds()).padStart(2, '0');
+
+      const formattedDateTime = `${year}${month}${day}${hours}${minutes}${seconds}`;
+      return formattedDateTime;
+  }
+
+  async getEncryptionToken(reqDtim, currentTimestamp, reqNo) {
+      try {
+          const authorization = Buffer.from(this.accessToken + ':' + currentTimestamp + ':' + this.clientId).toString('base64');
+
+          const response = await axios({
+              method: 'POST',
+              url: 'https://svc.niceapi.co.kr:22001/digital/niceid/api/v1.0/common/crypto/token',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `bearer ${authorization}`,
+                  'client_id': this.clientId,
+                  'productID': this.productId,
+              },
+              data: {
+                  'dataHeader': {
+                      'CNTY_CD': 'ko' // 이용언어 : ko, en, cn
+                  },
+                  'dataBody': {
+                      'req_dtim': reqDtim,    // 요청일시
+                      'req_no': reqNo,    // 요청고유번호
+                      'enc_mode': '1' // 사용할 암복호화 구분 1 : AES128/CBC/PKCS7
+                  }
+              }
+          });
+
+          const resData = response.data;
+          
+          // P000 성공, 이외 모두 오류 
+          if (resData.dataHeader.GW_RSLT_CD !== '1200' && resData.dataBody.rsp_cd !== 'P000') {
+              throw new Error('Failed to request crypto token');
+          }
+          
+          // 사이트 코드, 서버 토큰 값, 서버 토큰 버전 반환 
+          return {
+              'siteCode': resData.dataBody.site_code,
+              'tokenVal': resData.dataBody.token_val,
+              'tokenVersionId': resData.dataBody.token_version_id
+          }
+
+      } catch (error) {
+          throw new Error('Failed to get encryption token');
+      }
+  }
 }
