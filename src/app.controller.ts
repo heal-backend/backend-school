@@ -4,6 +4,7 @@ import axios from 'axios';
 import {stringify} from 'qs';
 import { v4 as uuidv4 } from 'uuid';
 import { createHash, createCipheriv, createHmac} from 'crypto';
+import { Request } from 'express';
 
 @Controller()
 export class AppController {
