@@ -75,7 +75,7 @@ export class AppController {
         }
         
         const requestno = reqNo;    // 서비스 요청 고유 번호(*)   
-        const returnurl = "http://13.209.188.108:4001/nice-return";   // 인증결과를 받을 url(*)   
+        const returnurl = "http://13.209.188.108:4001/nice-callback";   // 인증결과를 받을 url(*)   
         const sitecode = siteCode;  // 암호화토큰요청 API 응답 site_code(*)    
         const authtype = '';    // 인증수단 고정(M:휴대폰인증,C:카드본인확인인증,X:인증서인증,U:공동인증서인증,F:금융인증서인증,S:PASS인증서인증)
         const mobileco = '';    // 이통사 우선 선택 
