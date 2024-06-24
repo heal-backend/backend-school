@@ -14,9 +14,11 @@ export class AppController {
   clientSecret = "6620c480c13db6426b09d72f5616c074";
 
   @Get()
-  getHello1() {
+  getHello1(@Session() session) {
+
     console.log("hello")
     console.log("hello")
+    console.log(session)
     console.log("hello")
   }
 
