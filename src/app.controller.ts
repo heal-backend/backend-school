@@ -8,6 +8,9 @@ import { v4 as uuidv4 } from 'uuid';
 export class AppController {
   // constructor(private readonly appService: AppService) {}
 
+  clientId = "af394038-aa0b-41bb-ad96-00669e5d9698";
+  clientSecret = "6620c480c13db6426b09d72f5616c074";
+
   @Get()
   getHello1() {
     console.log("hello")
@@ -138,11 +141,8 @@ export class AppController {
     
 
   async #getAccessToken() {
-    const clientId = process.env.NICE_CLIENT_ID;
-    const clientSecret = process.env.NICE_CLIENT_SECRET;
-    console.log(clientId)
-    console.log(clientSecret)
-    const authorization = Buffer.from(clientId + ':' + clientSecret).toString('base64');
+    
+    const authorization = Buffer.from(this.clientId + ':' + this.clientSecret).toString('base64');
 
     const dataBody = {
         'scope': 'default',
