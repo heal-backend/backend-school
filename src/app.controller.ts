@@ -131,7 +131,9 @@ export class AppController {
       const encData = query.enc_data;
 
       const decData = niceAuthHandler.decryptData(encData, key, iv);
+      console.log("decData")
       console.log(decData)
+      return decData
       // res.redirect(301, 'http:locahost:3000/nice_success');
   } catch (error) {
       // res.status(500).json({ error: error.toString() })
