@@ -116,7 +116,7 @@ export class AppController {
       }
   }
 
-  @Get('nice-callback')
+  @Post('nice-callback')
   @HttpCode(HttpStatus.OK)
   async returnCallback(
     @Query() query,
