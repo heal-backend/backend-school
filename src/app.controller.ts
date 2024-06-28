@@ -84,7 +84,7 @@ export class AppController {
         const authtype = '';    // 인증수단 고정(M:휴대폰인증,C:카드본인확인인증,X:인증서인증,U:공동인증서인증,F:금융인증서인증,S:PASS인증서인증)
         const mobileco = '';    // 이통사 우선 선택 
         const bussinessno = ''; // 사업자번호(법인인증인증에 한함)
-        const methodtype = 'get';   // 결과 url 전달 시 http method 타입
+        const methodtype = 'post';   // 결과 url 전달 시 http method 타입
         const popupyn = 'Y';    // 
         const receivedata = 'mobileno'; // 인증 후 전달받을 데이터 세팅 
         const mobileno = 'Y';
@@ -120,23 +120,16 @@ export class AppController {
   @HttpCode(HttpStatus.OK)
   async returnCallback(
     @Query() query,
-    @Body() body,
-    @Param() param,
   ) {
-    console.log("query")
-    console.log(query)
-    console.log("body")
-    console.log(body)
-    console.log("param")
-    console.log(param)
     const encData = query.enc_data;
 
     try {
       // 세션에 저장된 대칭키 
       const decData = this.decryptData(encData, this.key, this.iv);
-      console.log("decData")
-      console.log(decData)
-      return "success"
+
+      // save phoneNumber on redis
+
+      return `${decData.mobileno}`
       // res.redirect(301, 'http:locahost:3000/nice_success');
   } catch (error) {
     console.log(error)
