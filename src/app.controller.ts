@@ -116,7 +116,7 @@ export class AppController {
       }
   }
 
-  @Post('nice-callback')
+  @Get('nice-callback')
   @HttpCode(HttpStatus.OK)
   async returnCallback(
     @Query() query,
@@ -129,7 +129,7 @@ export class AppController {
 
       // save phoneNumber on redis
 
-      return `${decData.mobileno}`
+      return decData
       // res.redirect(301, 'http:locahost:3000/nice_success');
   } catch (error) {
     console.log(error)
