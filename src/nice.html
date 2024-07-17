@@ -1,0 +1,45 @@
+<html>
+<body>
+<script>
+    window.name="Parent_window";
+// <!--    window.onmessage = (event) => {-->
+// <!--      console.log(`Received message: ${event.data}`);-->
+// <!--    };-->
+
+    const openWindow = (params) => {
+        const obj = JSON.parse(params);
+        document.getElementById("token_version_id").value=obj.tokenVersionId
+        document.getElementById("enc_data").value=obj.encData
+        document.getElementById("integrity_value").value=obj.integrityValue
+        window.open('', 'popupChk', 'top=50, fullscreen=no, menubar=no, status=no, toolbar=no,titlebar=yes, location=no, scrollbar=no');
+        document.form_chk.action = "https://nice.checkplus.co.kr/CheckPlusSafeModel/checkplus.cb";
+        document.form_chk.target = "popupChk";
+        document.form_chk.submit();
+    };
+
+// <!--    const resultData = {-->
+// <!--        name: window.document.getElementById('username').textContent,-->
+// <!--        phoneNumber: window.document.getElementById('mobileno').textContent,-->
+// <!--        gender: window.document.getElementById('gender').textContent,-->
+// <!--        birthdate: window.document.getElementById('birthdate').textContent,-->
+// <!--        userDi: window.document.getElementById('dupinfo').textContent,-->
+// <!--        userCi: window.document.getElementById('sConnInfo').textContent,-->
+// <!--    }-->
+
+    function showAndroidToast(toast) {
+        Android.showToast(toast);
+    };
+
+</script>
+<form name="form_chk">
+    <input type="hidden" id="m" name="m" value="service"/>
+    <input type="hidden" id="token_version_id" name="token_version_id" value=""/>
+    <input type="hidden" id="enc_data" name="enc_data" value=""/>
+    <input type="hidden" id="integrity_value" name="integrity_value" value=""/>
+</form>
+<input type="button" value="Say hello" onClick="showAndroidToast('Hello Android!')" />
+</body>
+</html>
+
+
+

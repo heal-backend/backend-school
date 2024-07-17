@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { createHash, createCipheriv, createHmac, createDecipheriv} from 'crypto';
 import { decode} from 'iconv-lite';
 import { Response } from 'express';
+import { join } from 'path';
 
 @Controller()
 export class AppController {
@@ -16,6 +17,14 @@ export class AppController {
 
   key: string;
   iv: string;
+
+
+  @Get('a')
+  getNiceHtml(@Res() res: Response) {
+    console.log(__dirname)
+    const filePath = join(process.cwd(), 'src', 'nice.html');
+    res.sendFile(filePath);
+  }
 
   @Get()
   getHello1(@Session() session) {
