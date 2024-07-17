@@ -5,6 +5,7 @@ import {stringify} from 'qs';
 import { v4 as uuidv4 } from 'uuid';
 import { createHash, createCipheriv, createHmac, createDecipheriv} from 'crypto';
 import { decode} from 'iconv-lite';
+import { Response } from 'express';
 
 @Controller()
 export class AppController {
@@ -120,16 +121,19 @@ export class AppController {
   @HttpCode(HttpStatus.OK)
   async returnCallback(
     @Query() query,
+    @Res() res: Response,
   ) {
     const encData = query.enc_data;
 
     try {
       // 세션에 저장된 대칭키 
-      const decData = this.decryptData(encData, this.key, this.iv);
+      // const decData = this.decryptData(encData, this.key, this.iv);
 
       // save phoneNumber on redis
 
-      return decData
+
+      // return decData
+      return res.redirect('/?type=test-heal');
       // res.redirect(301, 'http:locahost:3000/nice_success');
   } catch (error) {
     console.log(error)
