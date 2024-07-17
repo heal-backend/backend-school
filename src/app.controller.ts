@@ -133,7 +133,8 @@ export class AppController {
 
 
       // return decData
-      return res.redirect('/?type=test-heal');
+      // return res.redirect('/?type=test-heal');
+      return res.redirect('');
       // res.redirect(301, 'http:locahost:3000/nice_success');
   } catch (error) {
     console.log(error)
