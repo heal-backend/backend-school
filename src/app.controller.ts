@@ -25,6 +25,13 @@ export class AppController {
     const filePath = join(process.cwd(), 'src', 'nice.html');
     res.sendFile(filePath);
   }
+  
+  @Get('b')
+  getNiceHtmlB(@Res() res: Response) {
+    console.log(__dirname)
+    const filePath = join(process.cwd(), 'src', 'b.html');
+    res.sendFile(filePath);
+  }
 
   @Get()
   getHello1(@Session() session) {
