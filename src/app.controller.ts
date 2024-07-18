@@ -101,7 +101,7 @@ export class AppController {
         const authtype = '';    // 인증수단 고정(M:휴대폰인증,C:카드본인확인인증,X:인증서인증,U:공동인증서인증,F:금융인증서인증,S:PASS인증서인증)
         const mobileco = '';    // 이통사 우선 선택 
         const bussinessno = ''; // 사업자번호(법인인증인증에 한함)
-        const methodtype = 'post';   // 결과 url 전달 시 http method 타입
+        const methodtype = 'get';   // 결과 url 전달 시 http method 타입
         const popupyn = 'Y';    // 
         const receivedata = 'mobileno'; // 인증 후 전달받을 데이터 세팅 
         const mobileno = 'Y';
