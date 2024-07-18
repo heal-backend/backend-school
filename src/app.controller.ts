@@ -172,7 +172,7 @@ export class AppController {
     console.log("decData")
     return {
       name: decData.name,
-      mobileno: decData.mobile_no,
+      mobileno: decData.mobileno,
       authtype: decData.authtype,
       resultcode: decData.resultcode
     }
