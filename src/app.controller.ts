@@ -157,6 +157,23 @@ export class AppController {
       // res.status(500).json({ error: error.toString() })
   }
   }
+  
+  @Post('nice-result')
+  @HttpCode(HttpStatus.OK)
+  async postNiceResult(
+    @Body() body,
+  ) {
+    console.log("body")
+    console.log("body")
+    console.log("body")
+    console.log("body")
+    console.log(body)
+    console.log("body")
+    console.log("body")
+    console.log("body")
+    console.log("body")
+
+  }
 
   @Post('nice-test')
   async niceTest() {
