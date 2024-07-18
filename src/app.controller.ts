@@ -163,8 +163,13 @@ export class AppController {
   async postNiceResult(
     @Body() {encData},
   ) {
-    const decData = this.decryptData(encData, this.key, this.iv);
     
+    const decData = this.decryptData(encData, this.key, this.iv);
+    console.log("decData")
+    console.log("decData")
+    console.log(decData)
+    console.log("decData")
+    console.log("decData")
     return {
       name: decData.name,
       mobileno: decData.mobile_no,
