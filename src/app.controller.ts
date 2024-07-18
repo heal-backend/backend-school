@@ -161,17 +161,16 @@ export class AppController {
   @Post('nice-result')
   @HttpCode(HttpStatus.OK)
   async postNiceResult(
-    @Body() body,
+    @Body() {encData},
   ) {
-    console.log("body")
-    console.log("body")
-    console.log("body")
-    console.log("body")
-    console.log(body)
-    console.log("body")
-    console.log("body")
-    console.log("body")
-    console.log("body")
+    const decData = this.decryptData(encData, this.key, this.iv);
+    
+    return {
+      name: decData.name,
+      mobileno: decData.mobile_no,
+      authtype: decData.authtype,
+      resultcode: decData.resultcode
+    }
 
   }
 
