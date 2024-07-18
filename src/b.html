@@ -1,20 +1,10 @@
 <html>
     <head>
         <script language='javascript'>
-            window.addEventListener(
-              "message",
-              (event) => {
-                console.log('message', event);
-              },
-              false,
-            );
-
-            const getParams = () => {
-                const urlParams = new URLSearchParams(window.location.search);
-                const searchParams = new URLSearchParams(paramsString);
-                console.log('searchParams', searchParams);
-                Android.setMessage(searchParams)
-            };
+            function closeMe() {
+                window.opener = self;
+                window.close();
+            }
         </script>
     </head>
     <body>
