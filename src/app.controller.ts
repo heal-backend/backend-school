@@ -73,7 +73,7 @@ export class AppController {
   @Patch('password')
   async setNewPassword(@Req() req) {
     const connection = await mysql.createConnection({
-      host: 'test2.c22y4jou41vu.ap-northeast-2.rds.amazonaws.com',
+      host: 'restore20240513.c22y4jou41vu.ap-northeast-2.rds.amazonaws.com',
       user: 'admin',
       password: 'Database1',
       database: 'bim_zunwifsptvgkvhmvavos'
