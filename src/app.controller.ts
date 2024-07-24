@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Query, Req, Res, Session } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, Patch, Post, Query, Req, Res, Session } from '@nestjs/common';
 // import { AppService } from './app.service';
 import axios from 'axios';
 import {stringify} from 'qs';
@@ -70,10 +70,30 @@ export class AppController {
     }
   }
 
-  @Get('set-password')
-  setNewPassword() {
-    // req.param.phoneNumber
-    // req.param.password
+  @Patch('password')
+  async setNewPassword(@Req() req) {
+    const connection = await mysql.createConnection({
+      host: 'test2.c22y4jou41vu.ap-northeast-2.rds.amazonaws.com',
+      user: 'admin',
+      password: 'Database1',
+      database: 'bim_zunwifsptvgkvhmvavos'
+    });
+
+    const [rows, fields] = await connection.execute('SELECT * FROM _DEVPL_eYxr_loginV2 WHERE email = ?', [req.body.email]);
+    if (!rows[0]) {
+      return "Not existing user"
+    }
+
+    const encryptedPassword = await encryption(req.body.password)
+
+    await connection.execute(
+      'UPDATE _DEVPL_eYxr_loginV2 SET pass = ? WHERE email = ?',
+      [encryptedPassword, req.body.email]
+    );
+
+    return {
+      success: true
+    }
   }
 
 
