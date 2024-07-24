@@ -7,6 +7,39 @@ import { createHash, createCipheriv, createHmac, createDecipheriv} from 'crypto'
 import { decode} from 'iconv-lite';
 import { Response } from 'express';
 import { join } from 'path';
+import * as mysql from 'mysql2/promise';
+import * as crypto from 'crypto';
+
+const Incrypt_factor = {
+  salt: "SecReT4saLtAnd9CoFfie",
+  run_num: 74619,
+  length: 64,
+  method: "sha256",
+};
+
+async function encryption(Input_string) {
+  return new Promise(function (rs, rj) {
+    try {
+      crypto.pbkdf2(
+        Input_string,
+        Incrypt_factor.salt,
+        Incrypt_factor.run_num,
+        Incrypt_factor.length,
+        Incrypt_factor.method,
+        (err, derivedKey) => {
+          if (err) {
+            return rj();
+          } else {
+            return rs(derivedKey.toString("hex"));
+          }
+        }
+      );
+    } catch (err) {
+      console.log(err)
+      return rj();
+    }
+  });
+}
 
 @Controller()
 export class AppController {
@@ -17,6 +50,33 @@ export class AppController {
 
   key: string;
   iv: string;
+
+
+  @Get('email-by-phone-number')
+  async getEmailByPhoneNumber(@Req() req) {
+    const connection = await mysql.createConnection({
+      host: 'test2.c22y4jou41vu.ap-northeast-2.rds.amazonaws.com',
+      user: 'admin',
+      password: 'Database1',
+      database: 'bim_zunwifsptvgkvhmvavos'
+    });
+
+  const [rows, fields] = await connection.execute('SELECT * FROM _DEVPL_eYxr_loginV2 WHERE phone = ?', [req.query.phoneNumber]);
+    if (!rows[0]) {
+      return "Not existing user"
+    }
+  return {
+      phoneNumber: rows[0].email
+    }
+  }
+
+  @Get('set-password')
+  setNewPassword() {
+    // req.param.phoneNumber
+    // req.param.password
+  }
+
+
 
 
   @Get('a')

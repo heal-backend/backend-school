@@ -23,6 +23,7 @@ async function bootstrap() {
   
   app.setBaseViewsDir(join(__dirname, '..', 'views'));
   app.setViewEngine('ejs');
+
 }
 
 bootstrap();
