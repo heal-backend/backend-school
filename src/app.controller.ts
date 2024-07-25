@@ -65,8 +65,10 @@ export class AppController {
     if (!rows[0]) {
       return "Not existing user"
     }
+
   return {
-      phoneNumber: rows[0].email
+      phoneNumber: rows[0].email,
+      name: rows[0].username
     }
   }
 
